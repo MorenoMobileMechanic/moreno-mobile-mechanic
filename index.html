@@ -58,65 +58,65 @@
 
 <div class="container">
     <h2>Book Mobile Mechanic Service</h2>
-  <form id="bookingForm" action="https://formspree.io/f/mvkkqjyw" method="POST" onsubmit="handleFormSubmit(event)">
+<form id="bookingForm" action="https://formspree.io/f/mvkkqjyw" method="POST">
         
-        <!-- Contact Information -->
-        <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" required placeholder="John Doe">
-        </div>
+    <!-- Contact Information -->
+    <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required placeholder="John Doe">
+    </div>
 
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" required placeholder="(555) 555-5555">
-        </div>
+    <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required placeholder="(555) 555-5555">
+    </div>
 
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" required placeholder="john@example.com">
-        </div>
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required placeholder="john@example.com">
+    </div>
 
-        <!-- Vehicle Information -->
-        <div class="form-group">
-            <label for="vehicleYear">Vehicle Year</label>
-            <input type="number" id="vehicleYear" min="1950" max="2027" required placeholder="2018">
-        </div>
+    <!-- Vehicle Information -->
+    <div class="form-group">
+        <label for="vehicleYear">Vehicle Year</label>
+        <input type="number" id="vehicleYear" name="vehicleYear" min="1950" max="2027" required placeholder="2018">
+    </div>
 
-        <div class="form-group">
-            <label for="vehicleMake">Vehicle Make</label>
-            <input type="text" id="vehicleMake" required placeholder="Honda">
-        </div>
+    <div class="form-group">
+        <label for="vehicleMake">Vehicle Make</label>
+        <input type="text" id="vehicleMake" name="vehicleMake" required placeholder="Honda">
+    </div>
 
-        <div class="form-group">
-            <label for="vehicleModel">Vehicle Model</label>
-            <input type="text" id="vehicleModel" required placeholder="Civic">
-        </div>
+    <div class="form-group">
+        <label for="vehicleModel">Vehicle Model</label>
+        <input type="text" id="vehicleModel" name="vehicleModel" required placeholder="Civic">
+    </div>
 
-        <!-- Appointment Date & Time -->
-        <div class="form-group">
-            <label for="apptDate">Requested Date (Monday–Friday)</label>
-            <input type="date" id="apptDate" required onchange="validateDay(this)">
-        </div>
+    <!-- Appointment Date & Time -->
+    <div class="form-group">
+        <label for="apptDate">Requested Date (Monday–Friday)</label>
+        <input type="date" id="apptDate" name="apptDate" required onchange="validateDay(this)">
+    </div>
 
-        <div class="form-group">
-            <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
-            <select id="apptTime" required>
-                <option value="">Select a time slot</option>
-                <option value="07:00">7:00 AM</option>
-                <option value="08:00">8:00 AM</option>
-                <option value="09:00">9:00 AM</option>
-                <option value="10:00">10:00 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="13:00">1:00 PM</option>
-                <option value="14:00">2:00 PM</option>
-                <option value="15:00">3:00 PM</option>
-                <option value="16:00">4:00 PM</option>
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
+        <select id="apptTime" name="apptTime" required>
+            <option value="">Select a time slot</option>
+            <option value="07:00">7:00 AM</option>
+            <option value="08:00">8:00 AM</option>
+            <option value="09:00">9:00 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="13:00">1:00 PM</option>
+            <option value="14:00">2:00 PM</option>
+            <option value="15:00">3:00 PM</option>
+            <option value="16:00">4:00 PM</option>
+        </select>
+    </div>
 
-        <button type="submit">Submit Appointment Request</button>
-  </form>
+    <button type="submit">Submit Appointment Request</button>
+</form>
 </div>
 
 <script>
@@ -131,34 +131,16 @@
         }
     }
 
-    // Handle Formspree submission
-    async function handleFormSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = new FormData(form);
-
+    // Capture form fields to show a customized success alert right before it redirects to Formspree
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
         const name = document.getElementById('name').value;
         const vehicle = `${document.getElementById('vehicleYear').value} ${document.getElementById('vehicleMake').value} ${document.getElementById('vehicleModel').value}`;
         const date = document.getElementById('apptDate').value;
         const time = document.getElementById('apptTime').value;
 
-        fetch(form.action, {
-            method: form.method,
-            body: data,
-            headers: {
-                'Accept': 'json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                alert(`Thank you, ${name}! Your request for a ${vehicle} on ${date} at ${time} has been submitted. We will contact you shortly to confirm.`);
-                form.reset();
-            } else {
-                alert("Oops! There was a problem submitting your request. Please try again.");
-            }
-        }).catch(error => {
-            alert("Oops! There was a problem submitting your request. Please try again.");
-        });
-    }
+        // Formspree will handle the submission natively and redirect back or show a success screen
+        alert(`Thank you, ${name}! Your request for a ${vehicle} on ${date} at ${time} has been submitted.`);
+    });
 </script>
 
 </body>
