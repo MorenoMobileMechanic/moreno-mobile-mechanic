@@ -199,7 +199,7 @@
             });
     }
 
-    // Fetch Models based on selected Year and Make
+   // Fetch Models based on selected Year and Make
 function loadModels() {
     const year = document.getElementById('vehicleYear').value;
     const make = document.getElementById('vehicleMake').value;
@@ -214,24 +214,56 @@ function loadModels() {
 
     modelSelect.disabled = false;
 
-    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&year=${year}&make=${make}&callback=?`)
-        .then(response => response.text())
-        .then(text => {
-            const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
-            data.models.forEach(model => {
-                let option = document.createElement('option');
-                option.value = model.model_name;
-                option.textContent = model.model_name;
-                modelSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            let option = document.createElement('option');
-            option.value = "Standard Model";
-            option.textContent = "Enter manually or select generic";
-            modelSelect.appendChild(option);
-        });
-}    
+    // Direct, reliable model lists based on popular makes
+    let models = [];
+    switch (make) {
+        case "Honda":
+            models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"];
+            break;
+        case "Toyota":
+            models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"];
+            break;
+        case "Ford":
+            models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"];
+            break;
+        case "Chevrolet":
+            models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"];
+            break;
+        case "Nissan":
+            models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"];
+            break;
+        case "Jeep":
+            models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"];
+            break;
+        case "Ram":
+            models = ["1500", "2500", "3500", "ProMaster"];
+            break;
+        case "Subaru":
+            models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"];
+            break;
+        case "Hyundai":
+            models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"];
+            break;
+        case "Kia":
+            models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"];
+            break;
+        case "BMW":
+            models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"];
+            break;
+        case "Mercedes-Benz":
+            models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"];
+            break;
+        default:
+            models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
+    }
+
+    models.forEach(modelName => {
+        let option = document.createElement('option');
+        option.value = modelName;
+        option.textContent = modelName;
+        modelSelect.appendChild(option);
+    });
+}
 
     // Ensure selected date is Monday through Friday
     function validateDay(input) {
