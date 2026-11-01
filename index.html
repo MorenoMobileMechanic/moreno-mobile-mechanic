@@ -32,12 +32,16 @@
             font-weight: bold;
             color: #555;
         }
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
         }
         button {
             background-color: #d9534f;
@@ -58,30 +62,29 @@
 
 <div class="container">
     <h2>Book Service Today With Moreno Mobile Mechanic</h2>
-<form id="bookingForm" action="https://formspree.io/f/mvkkqjyw" method="POST">
+    <form id="bookingForm" action="https://formspree.io/f/mvkkqjyw" method="POST">
         
-    <!-- Contact Information -->
-    <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" required placeholder="John Doe">
-    </div>
+        <!-- Contact Information -->
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="John Doe">
+        </div>
 
-    <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" required placeholder="(555) 555-5555">
-    </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required placeholder="(555) 555-5555">
+        </div>
 
-    <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" required placeholder="john@example.com">
-    </div>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="john@example.com">
+        </div>
 
-    <!-- Vehicle Information -->
+        <!-- Vehicle Information -->
         <div class="form-group">
             <label for="vehicleYear">Vehicle Year</label>
             <select id="vehicleYear" name="vehicleYear" required onchange="loadMakes()">
                 <option value="">Select Year</option>
-                <!-- Years generated dynamically via JavaScript down below -->
             </select>
         </div>
 
@@ -110,31 +113,49 @@
             <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123 (CA)">
         </div>
 
-    <!-- Appointment Date & Time -->
-    <div class="form-group">
-        <label for="apptDate">Requested Date (Monday–Friday)</label>
-        <input type="date" id="apptDate" name="apptDate" required onchange="validateDay(this)">
-    </div>
+        <!-- Service Requested -->
+        <div class="form-group">
+            <label for="serviceRequested">Service Requested</label>
+            <select id="serviceRequested" name="serviceRequested" required onchange="toggleDescription(this)">
+                <option value="">Select a Service</option>
+                <option value="Oil Change (Starting at $99.99)">Oil Change Service (Starting at $99.99)</option>
+                <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis ($120 flat rate fee)</option>
+                <option value="Free Brake Quote">Free Brake Service Quote</option>
+                <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection ($120)</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
-        <select id="apptTime" name="apptTime" required>
-            <option value="">Select a time slot</option>
-            <option value="07:00">7:00 AM</option>
-            <option value="08:00">8:00 AM</option>
-            <option value="09:00">9:00 AM</option>
-            <option value="10:00">10:00 AM</option>
-            <option value="11:00">11:00 AM</option>
-            <option value="12:00">12:00 PM</option>
-            <option value="13:00">1:00 PM</option>
-            <option value="14:00">2:00 PM</option>
-            <option value="15:00">3:00 PM</option>
-            <option value="16:00">4:00 PM</option>
-        </select>
-    </div>
+        <!-- Conditional Description Box -->
+        <div class="form-group" id="concernBoxGroup" style="display: none;">
+            <label for="concernDetails">Details of Concern</label>
+            <textarea id="concernDetails" name="concernDetails" placeholder="add details of concern in this box"></textarea>
+        </div>
 
-    <button type="submit">Submit Appointment Request</button>
-</form>
+        <!-- Appointment Date & Time -->
+        <div class="form-group">
+            <label for="apptDate">Requested Date (Monday–Friday)</label>
+            <input type="date" id="apptDate" name="apptDate" required onchange="validateDay(this)">
+        </div>
+
+        <div class="form-group">
+            <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
+            <select id="apptTime" name="apptTime" required>
+                <option value="">Select a time slot</option>
+                <option value="07:00">7:00 AM</option>
+                <option value="08:00">8:00 AM</option>
+                <option value="09:00">9:00 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="13:00">1:00 PM</option>
+                <option value="14:00">2:00 PM</option>
+                <option value="15:00">3:00 PM</option>
+                <option value="16:00">4:00 PM</option>
+            </select>
+        </div>
+
+        <button type="submit">Submit Appointment Request</button>
+    </form>
 </div>
 
 <script>
@@ -149,6 +170,17 @@
             yearSelect.appendChild(option);
         }
     };
+
+    // Toggle description box visibility for diagnosis
+    function toggleDescription(select) {
+        const concernGroup = document.getElementById('concernBoxGroup');
+        if (select.value === "Vehicle Inspection/Diagnosis ($120)") {
+            concernGroup.style.display = "block";
+        } else {
+            concernGroup.style.display = "none";
+            document.getElementById('concernDetails').value = ""; // clear text if switched away
+        }
+    }
 
     // Fetch Makes from CarQuery API based on selected Year
     function loadMakes() {
@@ -167,11 +199,9 @@
 
         makeSelect.disabled = false;
         
-        // Fetching makes from free public API
         fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}&callback=?`)
             .then(response => response.text())
             .then(text => {
-                // Parse CarQuery JSONP response
                 const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
                 data.makes.forEach(make => {
                     let option = document.createElement('option');
@@ -181,16 +211,15 @@
                 });
             })
             .catch(error => {
-                // Expanded fallback list with many more makes
                 const commonMakes = [
                     "Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", 
                     "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Genesis", 
                     "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", 
                     "Land Rover", "Lexus", "Lincoln", "Mazda", "Mercedes-Benz", 
-                   "Mini", "Mitsubishi", "Nissan", "Porsche", "Ram", "Subaru", 
-             "Tesla", "Toyota", "Volkswagen", "Volvo"
-         ];
-         commonMakes.forEach(make => {
+                    "Mini", "Mitsubishi", "Nissan", "Porsche", "Ram", "Subaru", 
+                    "Tesla", "Toyota", "Volkswagen", "Volvo"
+                ];
+                commonMakes.forEach(make => {
                     let option = document.createElement('option');
                     option.value = make;
                     option.textContent = make;
@@ -199,76 +228,75 @@
             });
     }
 
-   // Fetch Models based on selected Year and Make
-function loadModels() {
-    const year = document.getElementById('vehicleYear').value;
-    const make = document.getElementById('vehicleMake').value;
-    const modelSelect = document.getElementById('vehicleModel');
+    // Fetch Models based on selected Year and Make
+    function loadModels() {
+        const year = document.getElementById('vehicleYear').value;
+        const make = document.getElementById('vehicleMake').value;
+        const modelSelect = document.getElementById('vehicleModel');
 
-    modelSelect.innerHTML = '<option value="">Select Model</option>';
+        modelSelect.innerHTML = '<option value="">Select Model</option>';
 
-    if (!make) {
-        modelSelect.disabled = true;
-        return;
+        if (!make) {
+            modelSelect.disabled = true;
+            return;
+        }
+
+        modelSelect.disabled = false;
+
+        let models = [];
+        switch (make) {
+            case "Honda":
+                models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"];
+                break;
+            case "Toyota":
+                models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"];
+                break;
+            case "Ford":
+                models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"];
+                break;
+            case "Chevrolet":
+                models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"];
+                break;
+            case "Nissan":
+                models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"];
+                break;
+            case "Jeep":
+                models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"];
+                break;
+            case "Ram":
+                models = ["1500", "2500", "3500", "ProMaster"];
+                break;
+            case "Subaru":
+                models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"];
+                break;
+            case "Hyundai":
+                models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"];
+                break;
+            case "Kia":
+                models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"];
+                break;
+            case "BMW":
+                models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"];
+                break;
+            case "Mercedes-Benz":
+                models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"];
+                break;
+            default:
+                models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
+        }
+
+        models.forEach(modelName => {
+            let option = document.createElement('option');
+            option.value = modelName;
+            option.textContent = modelName;
+            modelSelect.appendChild(option);
+        });
     }
-
-    modelSelect.disabled = false;
-
-    // Direct, reliable model lists based on popular makes
-    let models = [];
-    switch (make) {
-        case "Honda":
-            models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"];
-            break;
-        case "Toyota":
-            models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"];
-            break;
-        case "Ford":
-            models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"];
-            break;
-        case "Chevrolet":
-            models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"];
-            break;
-        case "Nissan":
-            models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"];
-            break;
-        case "Jeep":
-            models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"];
-            break;
-        case "Ram":
-            models = ["1500", "2500", "3500", "ProMaster"];
-            break;
-        case "Subaru":
-            models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"];
-            break;
-        case "Hyundai":
-            models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"];
-            break;
-        case "Kia":
-            models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"];
-            break;
-        case "BMW":
-            models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"];
-            break;
-        case "Mercedes-Benz":
-            models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"];
-            break;
-        default:
-            models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
-    }
-
-    models.forEach(modelName => {
-        let option = document.createElement('option');
-        option.value = modelName;
-        option.textContent = modelName;
-        modelSelect.appendChild(option);
-    });
-}
 
     // Ensure selected date is Monday through Friday
     function validateDay(input) {
         const dateSelected = new Date(input.value + 'T00:00:00');
-        const dayOfWeek = dateSelected.getDay(); // 0 = Sunday, 6 = Saturday
+        const dayOfWeek = dateSelected.getDay(); 
 
         if (dayOfWeek === 0 || dayOfWeek === 6) {
             alert("Appointments are only available Monday through Friday. Please select a weekday.");
