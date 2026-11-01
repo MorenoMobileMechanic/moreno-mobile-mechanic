@@ -139,9 +139,15 @@
 
             <div class="form-group">
                 <label for="vehicleModel">Vehicle Model</label>
-                <select id="vehicleModel" name="vehicleModel" disabled>
+                <select id="vehicleModel" name="vehicleModel" onchange="checkOtherModel(this)" disabled>
                     <option value="">Select Model First</option>
                 </select>
+            </div>
+
+            <!-- Conditional Custom Model Box (Hidden by default) -->
+            <div class="form-group" id="customModelGroup" style="display: none;">
+                <label for="customModel">Enter Vehicle Model Name</label>
+                <input type="text" id="customModel" name="customModel" placeholder="Type your vehicle model">
             </div>
 
             <div class="form-group">
@@ -324,6 +330,10 @@
         const make = document.getElementById('vehicleMake').value;
         const modelSelect = document.getElementById('vehicleModel');
 
+        // Hide custom model box if they switch makes/years
+        document.getElementById('customModelGroup').style.display = 'none';
+        document.getElementById('customModel').value = '';
+
         modelSelect.innerHTML = '<option value="">Select Model</option>';
 
         if (!make) {
@@ -335,19 +345,19 @@
 
         let models = [];
         switch (make) {
-            case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"]; break;
-            case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"]; break;
-            case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"]; break;
-            case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"]; break;
-            case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"]; break;
-            case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"]; break;
-            case "Ram": models = ["1500", "2500", "3500", "ProMaster"]; break;
-            case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"]; break;
-            case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"]; break;
-            case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"]; break;
-            case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"]; break;
-            case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"]; break;
-            default: models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
+            case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline", "Other"]; break;
+            case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner", "Other"]; break;
+            case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger", "Other"]; break;
+            case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado", "Other"]; break;
+            case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa", "Other"]; break;
+            case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator", "Other"]; break;
+            case "Ram": models = ["1500", "2500", "3500", "ProMaster", "Other"]; break;
+            case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX", "Other"]; break;
+            case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent", "Other"]; break;
+            case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger", "Other"]; break;
+            case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1", "Other"]; break;
+            case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA", "Other"]; break;
+            default: models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other"];
         }
 
         models.forEach(modelName => {
@@ -356,6 +366,19 @@
             option.textContent = modelName;
             modelSelect.appendChild(option);
         });
+    }
+
+    // Toggle custom model box when "Other" is selected
+    function checkOtherModel(select) {
+        const customGroup = document.getElementById('customModelGroup');
+        if (select.value === "Other") {
+            customGroup.style.display = "block";
+            document.getElementById('customModel').required = true;
+        } else {
+            customGroup.style.display = "none";
+            document.getElementById('customModel').required = false;
+            document.getElementById('customModel').value = "";
+        }
     }
 
     // Ensure selected date is Monday through Friday
