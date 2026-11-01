@@ -324,7 +324,7 @@
             });
     }
 
-    // Fetch Models based on selected Year and Make
+ // Fetch Models based on selected Year and Make
     function loadModels() {
         const year = document.getElementById('vehicleYear').value;
         const make = document.getElementById('vehicleMake').value;
@@ -363,7 +363,7 @@
         models.forEach(modelName => {
             let option = document.createElement('option');
             option.value = modelName;
-            option.textContent = modelName;
+            option.textContent = modelName === "Other" ? "Other (Type custom model)" : modelName;
             modelSelect.appendChild(option);
         });
     }
