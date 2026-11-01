@@ -77,20 +77,38 @@
     </div>
 
     <!-- Vehicle Information -->
-    <div class="form-group">
-        <label for="vehicleYear">Vehicle Year</label>
-        <input type="number" id="vehicleYear" name="vehicleYear" min="1950" max="2027" required placeholder="2018">
-    </div>
+        <div class="form-group">
+            <label for="vehicleYear">Vehicle Year</label>
+            <select id="vehicleYear" name="vehicleYear" required onchange="loadMakes()">
+                <option value="">Select Year</option>
+                <!-- Years generated dynamically via JavaScript down below -->
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="vehicleMake">Vehicle Make</label>
-        <input type="text" id="vehicleMake" name="vehicleMake" required placeholder="Honda">
-    </div>
+        <div class="form-group">
+            <label for="vehicleMake">Vehicle Make</label>
+            <select id="vehicleMake" name="vehicleMake" required onchange="loadModels()" disabled>
+                <option value="">Select Make First</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="vehicleModel">Vehicle Model</label>
-        <input type="text" id="vehicleModel" name="vehicleModel" required placeholder="Civic">
-    </div>
+        <div class="form-group">
+            <label for="vehicleModel">Vehicle Model</label>
+            <select id="vehicleModel" name="vehicleModel" required disabled>
+                <option value="">Select Model First</option>
+            </select>
+        </div>
+
+        <!-- Optional Identification Fields -->
+        <div class="form-group">
+            <label for="vin">VIN Number <span style="font-weight: normal; color: #777;">(Optional)</span></label>
+            <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-digit VIN">
+        </div>
+
+        <div class="form-group">
+            <label for="licensePlate">License Plate & State <span style="font-weight: normal; color: #777;">(Optional)</span></label>
+            <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123 (CA)">
+        </div>
 
     <!-- Appointment Date & Time -->
     <div class="form-group">
@@ -120,6 +138,95 @@
 </div>
 
 <script>
+    // Populate Years on page load (from 1990 to current year 2026)
+    window.onload = function() {
+        const yearSelect = document.getElementById('vehicleYear');
+        const currentYear = 2026;
+        for (let y = currentYear; y >= 1990; y--) {
+            let option = document.createElement('option');
+            option.value = y;
+            option.textContent = y;
+            yearSelect.appendChild(option);
+        }
+    };
+
+    // Fetch Makes from CarQuery API based on selected Year
+    function loadMakes() {
+        const year = document.getElementById('vehicleYear').value;
+        const makeSelect = document.getElementById('vehicleMake');
+        const modelSelect = document.getElementById('vehicleModel');
+
+        makeSelect.innerHTML = '<option value="">Select Make</option>';
+        modelSelect.innerHTML = '<option value="">Select Model First</option>';
+        modelSelect.disabled = true;
+
+        if (!year) {
+            makeSelect.disabled = true;
+            return;
+        }
+
+        makeSelect.disabled = false;
+        
+        // Fetching makes from free public API
+        fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}&callback=?`)
+            .then(response => response.text())
+            .then(text => {
+                // Parse CarQuery JSONP response
+                const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
+                data.makes.forEach(make => {
+                    let option = document.createElement('option');
+                    option.value = make.make_display;
+                    option.textContent = make.make_display;
+                    makeSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                // Fallback list if API blocks request
+                const commonMakes = ["Ford", "Chevrolet", "Toyota", "Honda", "Nissan", "Jeep", "Ram", "Subaru", "Hyundai", "Kia", "BMW", "Mercedes-Benz"];
+                commonMakes.forEach(make => {
+                    let option = document.createElement('option');
+                    option.value = make;
+                    option.textContent = make;
+                    makeSelect.appendChild(option);
+                });
+            });
+    }
+
+    // Fetch Models based on selected Year and Make
+    // Fetch Models based on selected Year and Make
+function loadModels() {
+    const year = document.getElementById('vehicleYear').value;
+    const make = document.getElementById('vehicleMake').value;
+    const modelSelect = document.getElementById('vehicleModel');
+
+    modelSelect.innerHTML = '<option value="">Select Model</option>';
+
+    if (!make) {
+        modelSelect.disabled = true;
+        return;
+    }
+
+    modelSelect.disabled = false;
+
+    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&year=${year}&make=${make}&callback=?`)
+        .then(response => response.text())
+        .then(text => {
+            const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
+            data.models.forEach(model => {
+                let option = document.createElement('option');
+                option.value = model.model_name;
+                option.textContent = model.model_name;
+                modelSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            let option = document.createElement('option');
+            option.value = "Standard Model";
+            option.textContent = "Enter manually or select generic";
+            modelSelect.appendChild(option);
+        });
+}    
+
     // Ensure selected date is Monday through Friday
     function validateDay(input) {
         const dateSelected = new Date(input.value + 'T00:00:00');
@@ -130,17 +237,6 @@
             input.value = "";
         }
     }
-
-    // Capture form fields to show a customized success alert right before it redirects to Formspree
-    document.getElementById('bookingForm').addEventListener('submit', function(event) {
-        const name = document.getElementById('name').value;
-        const vehicle = `${document.getElementById('vehicleYear').value} ${document.getElementById('vehicleMake').value} ${document.getElementById('vehicleModel').value}`;
-        const date = document.getElementById('apptDate').value;
-        const time = document.getElementById('apptTime').value;
-
-        // Formspree will handle the submission natively and redirect back or show a success screen
-        alert(`Thank you, ${name}! Your request for a ${vehicle} on ${date} at ${time} has been submitted.`);
-    });
 </script>
 
 </body>
