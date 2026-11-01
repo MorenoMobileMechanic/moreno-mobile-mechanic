@@ -23,6 +23,12 @@
             color: #333;
             text-align: center;
         }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
         .form-group {
             margin-bottom: 20px;
         }
@@ -43,123 +49,174 @@
             resize: vertical;
             height: 100px;
         }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
         button {
             background-color: #d9534f;
             color: white;
-            padding: 12px;
+            padding: 12px 20px;
             border: none;
             border-radius: 4px;
-            width: 100%;
             font-size: 16px;
             cursor: pointer;
+            flex: 1;
         }
         button:hover {
             background-color: #c9302c;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        .step-indicator {
+            text-align: center;
+            font-weight: bold;
+            color: #777;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Book Service Today With Moreno Mobile Mechanic</h2>
+    <h2>Book Service With Moreno Mobile Mechanic</h2>
+    
     <form id="bookingForm" action="https://formspree.io/f/mvkkqjyw" method="POST">
         
-        <!-- Contact Information -->
-        <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required placeholder="John Doe">
+        <!-- STEP 1: Customer Info & Address -->
+        <div class="step active" id="step-1">
+            <div class="step-indicator">Step 1 of 3: Customer & Location Information</div>
+            
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="john@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="serviceAddress">Service Address (Where should we meet you?)</label>
+                <textarea id="serviceAddress" name="serviceAddress" placeholder="Street address, City, Zip Code" style="height: 70px;"></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="button" onclick="nextStep(1)">Next: Vehicle Info &rarr;</button>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" required placeholder="(555) 555-5555">
+        <!-- STEP 2: Vehicle Information -->
+        <div class="step" id="step-2">
+            <div class="step-indicator">Step 2 of 3: Vehicle Details</div>
+
+            <div class="form-group">
+                <label for="vehicleYear">Vehicle Year</label>
+                <select id="vehicleYear" name="vehicleYear" onchange="loadMakes()">
+                    <option value="">Select Year</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleMake">Vehicle Make</label>
+                <select id="vehicleMake" name="vehicleMake" onchange="loadModels()" disabled>
+                    <option value="">Select Make First</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleModel">Vehicle Model</label>
+                <select id="vehicleModel" name="vehicleModel" disabled>
+                    <option value="">Select Model First</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="vin">VIN Number <span style="font-weight: normal; color: #777;">(Optional)</span></label>
+                <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-digit VIN">
+            </div>
+
+            <div class="form-group">
+                <label for="licensePlate">License Plate & State <span style="font-weight: normal; color: #777;">(Optional)</span></label>
+                <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123 (CA)">
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="secondary" onclick="prevStep(2)">&larr; Back</button>
+                <button type="button" onclick="nextStep(2)">Next: Service & Time &rarr;</button>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required placeholder="john@example.com">
+        <!-- STEP 3: Service, Date, Time & Submit -->
+        <div class="step" id="step-3">
+            <div class="step-indicator">Step 3 of 3: Service & Appointment Time</div>
+
+            <div class="form-group">
+                <label for="serviceRequested">Service Requested</label>
+                <select id="serviceRequested" name="serviceRequested" onchange="toggleDescription(this)">
+                    <option value="">Select a Service</option>
+                    <option value="Oil Change (Starting at $99.99)">Oil Change Service (Starting at $99.99)</option>
+                    <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis ($120 flat rate fee)</option>
+                    <option value="Free Brake Quote">Free Brake Service Quote</option>
+                    <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection ($120)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="concernBoxGroup" style="display: none;">
+                <label for="concernDetails">Details of Concern</label>
+                <textarea id="concernDetails" name="concernDetails" placeholder="add details of concern in this box"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="apptDate">Requested Date (Monday–Friday)</label>
+                <input type="date" id="apptDate" name="apptDate" onchange="validateDay(this)">
+            </div>
+
+            <div class="form-group">
+                <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
+                <select id="apptTime" name="apptTime">
+                    <option value="">Select a time slot</option>
+                    <option value="07:00">7:00 AM</option>
+                    <option value="08:00">8:00 AM</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="secondary" onclick="prevStep(3)">&larr; Back</button>
+                <button type="submit">Submit Appointment Request</button>
+            </div>
         </div>
 
-        <!-- Vehicle Information -->
-        <div class="form-group">
-            <label for="vehicleYear">Vehicle Year</label>
-            <select id="vehicleYear" name="vehicleYear" required onchange="loadMakes()">
-                <option value="">Select Year</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="vehicleMake">Vehicle Make</label>
-            <select id="vehicleMake" name="vehicleMake" required onchange="loadModels()" disabled>
-                <option value="">Select Make First</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="vehicleModel">Vehicle Model</label>
-            <select id="vehicleModel" name="vehicleModel" required disabled>
-                <option value="">Select Model First</option>
-            </select>
-        </div>
-
-        <!-- Optional Identification Fields -->
-        <div class="form-group">
-            <label for="vin">VIN Number <span style="font-weight: normal; color: #777;">(Optional)</span></label>
-            <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-digit VIN">
-        </div>
-
-        <div class="form-group">
-            <label for="licensePlate">License Plate & State <span style="font-weight: normal; color: #777;">(Optional)</span></label>
-            <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123 (CA)">
-        </div>
-
-        <!-- Service Requested -->
-        <div class="form-group">
-            <label for="serviceRequested">Service Requested</label>
-            <select id="serviceRequested" name="serviceRequested" required onchange="toggleDescription(this)">
-                <option value="">Select a Service</option>
-                <option value="Oil Change (Starting at $99.99)">Oil Change Service (Starting at $99.99)</option>
-                <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis ($120 flat rate fee)</option>
-                <option value="Free Brake Quote">Free Brake Service Quote</option>
-                <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection ($120)</option>
-            </select>
-        </div>
-
-        <!-- Conditional Description Box -->
-        <div class="form-group" id="concernBoxGroup" style="display: none;">
-            <label for="concernDetails">Details of Concern</label>
-            <textarea id="concernDetails" name="concernDetails" placeholder="add details of concern in this box"></textarea>
-        </div>
-
-        <!-- Appointment Date & Time -->
-        <div class="form-group">
-            <label for="apptDate">Requested Date (Monday–Friday)</label>
-            <input type="date" id="apptDate" name="apptDate" required onchange="validateDay(this)">
-        </div>
-
-        <div class="form-group">
-            <label for="apptTime">Requested Time (7:00 AM – 4:00 PM)</label>
-            <select id="apptTime" name="apptTime" required>
-                <option value="">Select a time slot</option>
-                <option value="07:00">7:00 AM</option>
-                <option value="08:00">8:00 AM</option>
-                <option value="09:00">9:00 AM</option>
-                <option value="10:00">10:00 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="13:00">1:00 PM</option>
-                <option value="14:00">2:00 PM</option>
-                <option value="15:00">3:00 PM</option>
-                <option value="16:00">4:00 PM</option>
-            </select>
-        </div>
-
-        <button type="submit">Submit Appointment Request</button>
     </form>
+    
+    <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+        <a href="privacy.html" style="color: #666; text-decoration: none;">Privacy Policy</a>
+    </div>
 </div>
 
 <script>
-    // Populate Years on page load (from 1990 to current year 2026)
+    // Populate Years on page load
     window.onload = function() {
         const yearSelect = document.getElementById('vehicleYear');
         const currentYear = 2026;
@@ -171,6 +228,39 @@
         }
     };
 
+    // Step navigation logic with simple validation checks
+    function nextStep(current) {
+        if (current === 1) {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('serviceAddress').value;
+            if (!name || !phone || !email || !address) {
+                alert("Please fill out all customer information and your service address before proceeding.");
+                return;
+            }
+        }
+        if (current === 2) {
+            const year = document.getElementById('vehicleYear').value;
+            const make = document.getElementById('vehicleMake').value;
+            const model = document.getElementById('vehicleModel').value;
+            if (!year || !make || !model) {
+                alert("Please select your vehicle Year, Make, and Model before proceeding.");
+                return;
+            }
+        }
+
+        document.getElementById(`step-${current}`).classList.remove('active');
+        document.getElementById(`step-${current + 1}`).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function prevStep(current) {
+        document.getElementById(`step-${current}`).classList.remove('active');
+        document.getElementById(`step-${current - 1}`).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
     // Toggle description box visibility for diagnosis
     function toggleDescription(select) {
         const concernGroup = document.getElementById('concernBoxGroup');
@@ -178,7 +268,7 @@
             concernGroup.style.display = "block";
         } else {
             concernGroup.style.display = "none";
-            document.getElementById('concernDetails').value = ""; // clear text if switched away
+            document.getElementById('concernDetails').value = "";
         }
     }
 
@@ -190,7 +280,7 @@
 
         makeSelect.innerHTML = '<option value="">Select Make</option>';
         modelSelect.innerHTML = '<option value="">Select Model First</option>';
-        modelSelect.disabled = true;
+        makeSelect.disabled = true;
 
         if (!year) {
             makeSelect.disabled = true;
@@ -245,44 +335,19 @@
 
         let models = [];
         switch (make) {
-            case "Honda":
-                models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"];
-                break;
-            case "Toyota":
-                models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"];
-                break;
-            case "Ford":
-                models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"];
-                break;
-            case "Chevrolet":
-                models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"];
-                break;
-            case "Nissan":
-                models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"];
-                break;
-            case "Jeep":
-                models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"];
-                break;
-            case "Ram":
-                models = ["1500", "2500", "3500", "ProMaster"];
-                break;
-            case "Subaru":
-                models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"];
-                break;
-            case "Hyundai":
-                models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"];
-                break;
-            case "Kia":
-                models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"];
-                break;
-            case "BMW":
-                models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"];
-                break;
-            case "Mercedes-Benz":
-                models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"];
-                break;
-            default:
-                models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
+            case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline"]; break;
+            case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner"]; break;
+            case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger"]; break;
+            case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado"]; break;
+            case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa"]; break;
+            case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator"]; break;
+            case "Ram": models = ["1500", "2500", "3500", "ProMaster"]; break;
+            case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"]; break;
+            case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent"]; break;
+            case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger"]; break;
+            case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1"]; break;
+            case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA"]; break;
+            default: models = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Other / Custom Model"];
         }
 
         models.forEach(modelName => {
