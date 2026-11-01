@@ -181,9 +181,16 @@
                 });
             })
             .catch(error => {
-                // Fallback list if API blocks request
-                const commonMakes = ["Ford", "Chevrolet", "Toyota", "Honda", "Nissan", "Jeep", "Ram", "Subaru", "Hyundai", "Kia", "BMW", "Mercedes-Benz"];
-                commonMakes.forEach(make => {
+                // Expanded fallback list with many more makes
+                const commonMakes = [
+                    "Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", 
+                    "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Genesis", 
+                    "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", 
+                    "Land Rover", "Lexus", "Lincoln", "Mazda", "Mercedes-Benz", 
+                   "Mini", "Mitsubishi", "Nissan", "Porsche", "Ram", "Subaru", 
+             "Tesla", "Toyota", "Volkswagen", "Volvo"
+         ];
+         commonMakes.forEach(make => {
                     let option = document.createElement('option');
                     option.value = make;
                     option.textContent = make;
@@ -192,7 +199,6 @@
             });
     }
 
-    // Fetch Models based on selected Year and Make
     // Fetch Models based on selected Year and Make
 function loadModels() {
     const year = document.getElementById('vehicleYear').value;
