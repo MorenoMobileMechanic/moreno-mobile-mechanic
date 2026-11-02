@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Mechanic Service Request</title>
     <style>
-        /* Define Color Themes */
+        <style>
+        /* Define Dark Red Theme */
         :root {
-            --bg-color: #f4f4f9;
-            --container-bg: #ffffff;
-            --text-color: #333333;
-            --label-color: #555555;
-            --input-bg: #ffffff;
-            --input-border: #cccccc;
-            --input-text: #333333;
+            --bg-color: #4a0000;          /* Deep dark red background */
+            --container-bg: #5c0606;      /* Slightly brighter dark red card */
+            --text-color: #ffffff;        /* Crisp white text */
+            --label-color: #ffcccc;       /* Soft light red/pink for labels */
+            --input-bg: #380303;          /* Darker red input box background */
+            --input-border: #8b0000;      /* Dark red accent border */
+            --input-text: #ffffff;        /* White text inside inputs */
         }
 
-        /* Automatically switch colors if the user's device is in Dark Mode */
+        /* Keep the same dark red theme or tweak for dark mode devices */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #121212;
-                --container-bg: #1e1e1e;
-                --text-color: #f1f1f1;
-                --label-color: #b0b0b0;
-                --input-bg: #2d2d2d;
-                --input-border: #444444;
+                --bg-color: #380303;
+                --container-bg: #4a0000;
+                --text-color: #ffffff;
+                --label-color: #ffcccc;
+                --input-bg: #260000;
+                --input-border: #700000;
                 --input-text: #ffffff;
             }
         }
