@@ -306,7 +306,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         // Populate Years on page load
         window.onload = function() {
             const yearSelect = document.getElementById('vehicleYear');
@@ -388,4 +388,136 @@
             inputField.style.borderColor = "#d9534f"; 
             
             const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-
+            errorDiv.className = 'error-message';
+            errorDiv.style.color = "#d9534f";
+            errorDiv.style.fontSize = "12px";
+            errorDiv.style.marginTop = "5px";
+            errorDiv.textContent = message;
+            
+            inputField.parentNode.appendChild(errorDiv);
+        }
+
+        // Helper function to clear previous error messages and reset borders
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.style.borderColor = ""; 
+            });
+        }
+
+        // Toggle description box visibility for diagnosis
+        function toggleDescription(select) {
+            const concernGroup = document.getElementById('concernBoxGroup');
+            if (select.value === "Vehicle Inspection/Diagnosis ($120)") {
+                concernGroup.style.display = "block";
+            } else {
+                concernGroup.style.display = "none";
+                document.getElementById('concernDetails').value = "";
+            }
+        }
+
+        // Fetch Makes from CarQuery API based on selected Year
+        function loadMakes() {
+            const year = document.getElementById('vehicleYear').value;
+            const makeSelect = document.getElementById('vehicleMake');
+            const modelSelect = document.getElementById('vehicleModel');
+
+            makeSelect.innerHTML = '<option value="">Select Make</option>';
+            modelSelect.innerHTML = '<option value="">Select Model First</option>';
+            makeSelect.disabled = true;
+
+            if (!year) {
+                makeSelect.disabled = true;
+                return;
+            }
+
+            makeSelect.disabled = false;
+
+            fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}&callback=?`)
+                .then(response => response.text())
+                .then(text => {
+                    const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
+                    data.makes.forEach(make => {
+                        let option = document.createElement('option');
+                        option.value = make.make_display;
+                        option.textContent = make.make_display;
+                        makeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    const commonMakes = ["Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Genesis", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus", "Lincoln", "Mazda", "Mercedes-Benz", "Mini", "Mitsubishi", "Nissan", "Porsche", "Ram", "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo"];
+                    commonMakes.forEach(make => {
+                        let option = document.createElement('option');
+                        option.value = make;
+                        option.textContent = make;
+                        makeSelect.appendChild(option);
+                    });
+                });
+        }
+
+        // Fetch Models based on selected Year and Make
+        function loadModels() {
+            const year = document.getElementById('vehicleYear').value;
+            const make = document.getElementById('vehicleMake').value;
+            const modelSelect = document.getElementById('vehicleModel');
+
+            document.getElementById('customModelGroup').style.display = 'none';
+            document.getElementById('customModel').value = '';
+
+            modelSelect.innerHTML = '<option value="">Select Model</option>';
+
+            if (!make) {
+                modelSelect.disabled = true;
+                return;
+            }
+
+            modelSelect.disabled = false;
+            let models = [];
+
+            switch (make) {
+                case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline", "Other"]; break;
+                case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner", "Other"]; break;
+                case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger", "Other"]; break;
+                case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado", "Other"]; break;
+                case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa", "Other"]; break;
+                case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator", "Other"]; break;
+                case "Ram": models = ["1500", "2500", "3500", "ProMaster", "Other"]; break;
+                case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX", "Other"]; break;
+                case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent", "Other"]; break;
+                case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger", "Other"]; break;
+                case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1", "Other"]; break;
+                case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA", "Other"]; break;
+                default: models = ["Other"];
+            }
+
+            models.forEach(modelName => {
+                let option = document.createElement('option');
+                option.value = modelName;
+                option.textContent = modelName === "Other" ? "Other (Type custom model)" : modelName;
+                modelSelect.appendChild(option);
+            });
+        }
+
+        // Toggle custom model box when "Other" is selected
+        function checkOtherModel(select) {
+            const customGroup = document.getElementById('customModelGroup');
+            if (select.value === "Other") {
+                customGroup.style.display = "block";
+                document.getElementById('customModel').required = true;
+            } else {
+                customGroup.style.display = "none";
+                document.getElementById('customModel').required = false;
+                document.getElementById('customModel').value = "";
+            }
+        }
+
+        // Ensure selected date is Monday through Friday
+        function validateDay(input) {
+            const dateSelected = new Date(input.value + 'T00:00:00');
+            const dayOfWeek = dateSelected.getDay();
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                alert("Appointments are only available Monday through Friday. Please select a weekday.");
+                input.value = "";
+            }
+        }
+    </script>
