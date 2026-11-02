@@ -110,6 +110,13 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
+       .form-row {
+            display: flex;
+            gap: 15px; /* Creates space between the two boxes */
+        }
+        .form-row .form-group {
+            flex: 1; /* Ensures both boxes share the row equally */
+        }
     </style>
 </head>
 <body>
@@ -142,20 +149,27 @@
         <div class="step active" id="step-1">
             <div class="step-indicator">Step 1 of 3: Customer & Location Information</div>
             
+        <!-- Add the side-by-side First and Last Name row here -->
+        <div class="form-row">
             <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="John Doe">
+                <label for="first-name">First Name *</label>
+                <input type="text" id="first-name" name="first_name" placeholder="John" required>
             </div>
+            <div class="form-group">
+                <label for="last-name">Last Name *</label>
+                <input type="text" id="last-name" name="last_name" placeholder="Doe" required>
+            </div>
+        </div>
 
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555">
-            </div>
+        <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555" required>
+        </div>
 
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="john@example.com">
-            </div>
+        <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="john@example.com" required>
+        </div>
 
             <div class="form-group">
                 <label for="serviceAddress">Service Address (Where should we meet you?)</label>
