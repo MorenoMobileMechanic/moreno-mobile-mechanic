@@ -217,13 +217,20 @@
                 <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-digit VIN">
             </div>
 
-            <div class="form-group">
-                <label for="licensePlate">License Plate & State <span style="font-weight: normal; color: #777;">(Optional)</span></label>
-                <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123 (CA)">
+            <!-- Side-by-side License Plate & State row (State is smaller) -->
+        <div class="form-row">
+            <div class="form-group" style="flex: 3;">
+                <label for="licensePlate">License Plate *</label>
+                <input type="text" id="licensePlate" name="licensePlate" placeholder="e.g., 7ABC123" required>
             </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="licenseState">State *</label>
+                <input type="text" id="licenseState" name="licenseState" placeholder="CA" maxlength="2" required>
+            </div>
+        </div>
 
             <div class="button-group">
-                <button type="button" class="secondary" onclick="prevStep(2)">&larr; Back</button>
+                <button type="button" class="secondary" onclick="prevStep(1)">&larr; Back</button>
                 <button type="button" onclick="nextStep(2)">Next: Service & Time &rarr;</button>
             </div>
         </div>
@@ -236,10 +243,10 @@
                 <label for="serviceRequested">Service Requested</label>
                 <select id="serviceRequested" name="serviceRequested" onchange="toggleDescription(this)">
                     <option value="">Select a Service</option>
-                    <option value="Oil Change (Starting at $99.99)">Oil Change Service (Starting at $99.99)</option>
-                    <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis ($120 flat rate fee)</option>
-                    <option value="Free Brake Quote">Free Brake Service Quote</option>
-                    <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection ($120)</option>
+                    <option value="Oil Change (Starting at $99.99)">Oil Change Service</option>
+                    <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis</option>
+                    <option value="Free Brake Quote">Brake Service Quote</option>
+                    <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection</option>
                 </select>
             </div>
 
@@ -336,12 +343,17 @@ function nextStep(current) {
         }
     }
 
-    if (current === 2) {
+   if (current === 2) {
         const year = document.getElementById('vehicleYear').value;
         const make = document.getElementById('vehicleMake').value;
         const model = document.getElementById('vehicleModel').value;
-        if (!year || !make || !model) {
-            alert("Please select your vehicle Year, Make, and Model before proceeding.");
+        const plate = document.getElementById('licensePlate').value.trim();
+        const state = document.getElementById('licenseState').value.trim();
+
+        // Clear any previous error styles/messages on step 2 if you use them, 
+        // or check fields directly:
+        if (!year || !make || !model || !plate || !state) {
+            alert("Please fill in your vehicle Year, Make, Model, License Plate, and State before proceeding.");
             return;
         }
     }
