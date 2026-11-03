@@ -390,14 +390,19 @@
             </div>
         </div>
 
-            <!-- STEP 4: Final Confirmation Prompt -->
+            <!-- STEP 4: Final Confirmation Prompt & Summary -->
     <div class="step" id="step-4">
         <div class="step-indicator">Step 4 of 4: Confirm Your Request</div>
         
-        <div class="form-group" style="text-align: center; margin-bottom: 25px;">
+        <div class="form-group" style="text-align: center; margin-bottom: 20px;">
             <p style="font-size: 16px; color: var(--text-color); line-height: 1.5;">
-                Please verify your details before sending your appointment request over to Moreno Mobile Mechanic.
+                Please review your appointment details below before sending your request to Moreno Mobile Mechanic.
             </p>
+        </div>
+
+        <!-- Dynamic Review Box -->
+        <div class="form-group" id="reviewSummary" style="background: var(--input-bg); border: 1px solid var(--input-border); padding: 15px; border-radius: 6px; font-size: 14px; line-height: 1.6;">
+            <!-- Content populated dynamically via JavaScript -->
         </div>
 
         <div class="button-group">
@@ -486,6 +491,9 @@
                     alert("Please select a service, a requested date, and a time slot before proceeding.");
                     return;
                 }
+        
+                // Populate the review summary right before moving to Step 4
+                populateReviewSummary();
             }
 
             document.getElementById(`step-${current}`).classList.remove('active');
@@ -638,4 +646,44 @@ function handleServiceSelection(radio) {
                 input.value = "";
             }
         }
+
+       function populateReviewSummary() {
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('serviceAddress').value;
+    
+    const year = document.getElementById('vehicleYear').value;
+    const make = document.getElementById('vehicleMake').value;
+    let model = document.getElementById('vehicleModel').value;
+    if (model === "Other") {
+        model = document.getElementById('customModel').value;
+    }
+    const plate = document.getElementById('licensePlate').value;
+    const state = document.getElementById('licenseState').value;
+    
+    const serviceRadio = document.querySelector('input[name="serviceRequested"]:checked');
+    const serviceName = serviceRadio ? serviceRadio.value : '';
+    const concern = document.getElementById('concernDetails').value;
+    
+    const apptDate = document.getElementById('apptDate').value;
+    const apptTime = document.getElementById('apptTime').value;
+
+    let summaryHTML = `
+        <div style="margin-bottom: 10px;"><strong>Customer:</strong> ${firstName} ${lastName}</div>
+        <div style="margin-bottom: 10px;"><strong>Phone / Email:</strong> ${phone} | ${email}</div>
+        <div style="margin-bottom: 10px;"><strong>Service Address:</strong> ${address || 'Not provided'}</div>
+        <div style="margin-bottom: 10px;"><strong>Vehicle:</strong> ${year} ${make} ${model} (${plate}, ${state})</div>
+        <div style="margin-bottom: 10px;"><strong>Requested Service:</strong> ${serviceName}</div>
+    `;
+
+    if (concern) {
+        summaryHTML += `<div style="margin-bottom: 10px;"><strong>Details of Concern:</strong> ${concern}</div>`;
+    }
+
+    summaryHTML += `<div><strong>Appointment Time:</strong> ${apptDate} at ${apptTime}</div>`;
+
+    document.getElementById('reviewSummary').innerHTML = summaryHTML;
+}
     </script>
