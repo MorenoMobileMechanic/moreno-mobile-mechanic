@@ -133,6 +133,60 @@
         .form-row .form-group {
             flex: 1;
         }
+
+        /* Service Selection Cards Grid */
+.service-cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.service-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    border: 2px solid var(--input-border);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.service-card:hover {
+    border-color: #d9534f;
+}
+
+.service-card input[type="radio"] {
+    margin-top: 4px;
+    width: auto;
+    cursor: pointer;
+}
+
+.service-card .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.service-card strong {
+    color: var(--text-color);
+    font-size: 15px;
+}
+
+.service-card .subtext {
+    font-size: 13px;
+    color: var(--label-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Highlight card when selected */
+.service-card:has(input[type="radio"]:checked) {
+    border-color: #d9534f;
+    background-color: rgba(217, 83, 79, 0.05);
+}
     </style>
 </head>
 <body>
@@ -252,24 +306,61 @@
             </div>
 
             <!-- STEP 3: Service, Date, Time & Submit -->
-            <div class="step" id="step-3">
-                <div class="step-indicator">Step 3 of 3: Service & Appointment Time</div>
-
-                <div class="form-group">
-                    <label for="serviceRequested">Service Requested</label>
-                    <select id="serviceRequested" name="serviceRequested" onchange="toggleDescription(this)">
-                        <option value="">Select a Service</option>
-                        <option value="Oil Change (Starting at $99.99)">Oil Change Service</option>
-                        <option value="Vehicle Inspection/Diagnosis ($120)">Vehicle Concern Inspection/Diagnosis</option>
-                        <option value="Free Brake Quote">Brake Service Quote</option>
-                        <option value="Pre Purchase Inspection ($120)">Pre Purchase Inspection</option>
-                    </select>
+<div class="step" id="step-3">
+    <div class="step-indicator">Step 3 of 3: Service & Appointment Time</div>
+    
+    <div class="form-group">
+        <label>Select a Service *</label>
+        
+        <!-- Service Selection Cards Container -->
+        <div class="service-cards-grid">
+            
+            <!-- Service Card 1: Diagnosis -->
+            <label class="service-card">
+                <input type="radio" name="serviceRequested" value="Vehicle Inspection/Diagnosis ($120)" onchange="handleServiceSelection(this)" required>
+                <div class="card-content">
+                    <strong>Vehicle Concern Inspection/Diagnosis ($120)</strong>
+                    <p class="subtext">Includes mobile dispatch and comprehensive on-site diagnostics. This fee acts as a diagnostic deposit and will be fully credited toward the repair cost if you approve the recommended work.</p>
                 </div>
+            </label>
 
-                <div class="form-group" id="concernBoxGroup" style="display: none;">
-                    <label for="concernDetails">Details of Concern</label>
-                    <textarea id="concernDetails" name="concernDetails" placeholder="add details of concern in this box"></textarea>
+            <!-- Service Card 2: Oil Change -->
+            <label class="service-card">
+                <input type="radio" name="serviceRequested" value="Oil Change (Starting at $99.99)" onchange="handleServiceSelection(this)">
+                <div class="card-content">
+                    <strong>Oil Change Service (Starting at $99.99)</strong>
+                    <p class="subtext">Standard mobile oil change service at your location.</p>
                 </div>
+            </label>
+
+            <!-- Service Card 3: Brake Quote -->
+            <label class="service-card">
+                <input type="radio" name="serviceRequested" value="Free Brake Quote" onchange="handleServiceSelection(this)">
+                <div class="card-content">
+                    <strong>Brake Service Quote</strong>
+                    <p class="subtext">Inspection and quote for brake pad and rotor replacement.</p>
+                </div>
+            </label>
+
+            <!-- Service Card 4: PPI -->
+            <label class="service-card">
+                <input type="radio" name="serviceRequested" value="Pre Purchase Inspection ($120)" onchange="handleServiceSelection(this)">
+                <div class="card-content">
+                    <strong>Pre Purchase Inspection ($120)</strong>
+                    <p class="subtext">Thorough multi-point inspection before buying a used vehicle.</p>
+                </div>
+            </label>
+
+        </div>
+    </div>
+
+    <!-- Details of Concern (Toggles open when Diagnosis is selected) -->
+    <div class="form-group" id="concernBoxGroup" style="display: none;">
+        <label for="concernDetails">Details of Concern</label>
+        <textarea id="concernDetails" name="concernDetails" placeholder="Add details of concern in this box"></textarea>
+    </div>
+    
+    <!-- Date and Time pickers follow here... -->
 
                 <div class="form-group">
                     <label for="apptDate">Requested Date (Monday–Friday)</label>
@@ -405,16 +496,16 @@
             });
         }
 
-        // Toggle description box visibility for diagnosis
-        function toggleDescription(select) {
-            const concernGroup = document.getElementById('concernBoxGroup');
-            if (select.value === "Vehicle Inspection/Diagnosis ($120)") {
-                concernGroup.style.display = "block";
-            } else {
-                concernGroup.style.display = "none";
-                document.getElementById('concernDetails').value = "";
-            }
-        }
+        // Toggle description / concern box visibility for diagnosis card
+function handleServiceSelection(radio) {
+    const concernGroup = document.getElementById('concernBoxGroup');
+    if (radio.value === "Vehicle Inspection/Diagnosis ($120)" && radio.checked) {
+        concernGroup.style.display = "block";
+    } else {
+        concernGroup.style.display = "none";
+        document.getElementById('concernDetails').value = "";
+    }
+}
 
         // Fetch Makes from CarQuery API based on selected Year
         function loadMakes() {
