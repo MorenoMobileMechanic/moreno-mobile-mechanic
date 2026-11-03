@@ -384,11 +384,27 @@
                     </select>
                 </div>
 
-                <div class="button-group">
-                    <button type="button" class="secondary" onclick="prevStep(3)">&larr; Back</button>
-                    <button type="submit">Submit Appointment Request</button>
-                </div>
+            <div class="button-group">
+                <button type="button" class="secondary" onclick="prevStep(3)">&larr; Back</button>
+                <button type="button" onclick="nextStep(3)">Review Appointment &rarr;</button>
             </div>
+        </div>
+
+            <!-- STEP 4: Final Confirmation Prompt -->
+    <div class="step" id="step-4">
+        <div class="step-indicator">Step 4 of 4: Confirm Your Request</div>
+        
+        <div class="form-group" style="text-align: center; margin-bottom: 25px;">
+            <p style="font-size: 16px; color: var(--text-color); line-height: 1.5;">
+                Please verify your details before sending your appointment request over to Moreno Mobile Mechanic.
+            </p>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="secondary" onclick="prevStep(4)">&larr; Go Back</button>
+            <button type="submit">Confirm & Send Request</button>
+        </div>
+    </div>
 
         </form>
 
@@ -457,6 +473,17 @@
 
                 if (!year || !make || !model || !plate || !state) {
                     alert("Please fill in your vehicle Year, Make, Model, License Plate, and State before proceeding.");
+                    return;
+                }
+            }
+
+            if (current === 3) {
+                const selectedService = document.querySelector('input[name="serviceRequested"]:checked');
+                const apptDate = document.getElementById('apptDate').value;
+                const apptTime = document.getElementById('apptTime').value;
+        
+                if (!selectedService || !apptDate || !apptTime) {
+                    alert("Please select a service, a requested date, and a time slot before proceeding.");
                     return;
                 }
             }
