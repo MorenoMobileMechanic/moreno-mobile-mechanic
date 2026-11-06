@@ -618,87 +618,78 @@ function handleServiceSelection(radio) {
     }
 }
 
-        // Fetch Makes from CarQuery API based on selected Year
-        function loadMakes() {
-            const year = document.getElementById('vehicleYear').value;
-            const makeSelect = document.getElementById('vehicleMake');
-            const modelSelect = document.getElementById('vehicleModel');
+        // Comprehensive built-in makes list (100% reliable, zero external downtime risk)
+const commonMakesList = [
+    "Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", 
+    "Dodge", "Fiat", "Ford", "GMC", "Genesis", "Honda", "Hyundai", 
+    "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus", 
+    "Lincoln", "Mazda", "Mercedes-Benz", "Mini", "Mitsubishi", "Nissan", 
+    "Porsche", "Ram", "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo", "Other"
+];
 
-            makeSelect.innerHTML = '<option value="">Select Make</option>';
-            modelSelect.innerHTML = '<option value="">Select Model First</option>';
-            makeSelect.disabled = true;
+// Populate Makes instantly when a Year is selected
+function loadMakes() {
+    const year = document.getElementById('vehicleYear').value;
+    const makeSelect = document.getElementById('vehicleMake');
+    const modelSelect = document.getElementById('vehicleModel');
+    
+    makeSelect.innerHTML = '<option value="">Select Make</option>';
+    modelSelect.innerHTML = '<option value="">Select Model First</option>';
+    makeSelect.disabled = true;
+    modelSelect.disabled = true;
 
-            if (!year) {
-                makeSelect.disabled = true;
-                return;
-            }
+    if (!year) return;
 
-            makeSelect.disabled = false;
+    makeSelect.disabled = false;
+    
+    commonMakesList.forEach(make => {
+        let option = document.createElement('option');
+        option.value = make;
+        option.textContent = make === "Other" ? "Other (Type custom make)" : make;
+        makeSelect.appendChild(option);
+    });
+}
 
-            fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}&callback=?`)
-                .then(response => response.text())
-                .then(text => {
-                    const data = JSON.parse(text.replace(/^[?\s*\(]+|\);\s*$/g, ''));
-                    data.makes.forEach(make => {
-                        let option = document.createElement('option');
-                        option.value = make.make_display;
-                        option.textContent = make.make_display;
-                        makeSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    const commonMakes = ["Acura", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Genesis", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus", "Lincoln", "Mazda", "Mercedes-Benz", "Mini", "Mitsubishi", "Nissan", "Porsche", "Ram", "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo"];
-                    commonMakes.forEach(make => {
-                        let option = document.createElement('option');
-                        option.value = make;
-                        option.textContent = make;
-                        makeSelect.appendChild(option);
-                    });
-                });
-        }
+// Populate Models based on selected Make
+function loadModels() {
+    const make = document.getElementById('vehicleMake').value;
+    const modelSelect = document.getElementById('vehicleModel');
+    
+    document.getElementById('customModelGroup').style.display = 'none';
+    document.getElementById('customModel').value = '';
+    modelSelect.innerHTML = '<option value="">Select Model</option>';
+    
+    if (!make) {
+        modelSelect.disabled = true;
+        return;
+    }
+    
+    modelSelect.disabled = false;
+    let models = [];
 
-        // Fetch Models based on selected Year and Make
-        function loadModels() {
-            const year = document.getElementById('vehicleYear').value;
-            const make = document.getElementById('vehicleMake').value;
-            const modelSelect = document.getElementById('vehicleModel');
+    switch (make) {
+        case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline", "Other"]; break;
+        case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner", "Other"]; break;
+        case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger", "Other"]; break;
+        case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado", "Other"]; break;
+        case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa", "Other"]; break;
+        case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator", "Other"]; break;
+        case "Ram": models = ["1500", "2500", "3500", "ProMaster", "Other"]; break;
+        case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX", "Other"]; break;
+        case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent", "Other"]; break;
+        case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger", "Other"]; break;
+        case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1", "Other"]; break;
+        case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA", "Other"]; break;
+        default: models = ["Other"];
+    }
 
-            document.getElementById('customModelGroup').style.display = 'none';
-            document.getElementById('customModel').value = '';
-
-            modelSelect.innerHTML = '<option value="">Select Model</option>';
-
-            if (!make) {
-                modelSelect.disabled = true;
-                return;
-            }
-
-            modelSelect.disabled = false;
-            let models = [];
-
-            switch (make) {
-                case "Honda": models = ["Accord", "Civic", "CR-V", "Pilot", "Odyssey", "Fit", "HR-V", "Ridgeline", "Other"]; break;
-                case "Toyota": models = ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma", "Tundra", "Prius", "4Runner", "Other"]; break;
-                case "Ford": models = ["F-150", "Explorer", "Escape", "Focus", "Mustang", "Edge", "Fusion", "Ranger", "Other"]; break;
-                case "Chevrolet": models = ["Silverado", "Equinox", "Malibu", "Cruze", "Tahoe", "Suburban", "Traverse", "Colorado", "Other"]; break;
-                case "Nissan": models = ["Altima", "Rogue", "Sentra", "Pathfinder", "Frontier", "Murano", "Versa", "Other"]; break;
-                case "Jeep": models = ["Wrangler", "Grand Cherokee", "Cherokee", "Renegade", "Compass", "Gladiator", "Other"]; break;
-                case "Ram": models = ["1500", "2500", "3500", "ProMaster", "Other"]; break;
-                case "Subaru": models = ["Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX", "Other"]; break;
-                case "Hyundai": models = ["Elantra", "Sonata", "Tucson", "Santa Fe", "Kona", "Palisade", "Accent", "Other"]; break;
-                case "Kia": models = ["Optima", "Sorento", "Sportage", "Forte", "Telluride", "Soul", "Stinger", "Other"]; break;
-                case "BMW": models = ["3 Series", "5 Series", "X3", "X5", "4 Series", "7 Series", "X1", "Other"]; break;
-                case "Mercedes-Benz": models = ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class", "GLA", "Other"]; break;
-                default: models = ["Other"];
-            }
-
-            models.forEach(modelName => {
-                let option = document.createElement('option');
-                option.value = modelName;
-                option.textContent = modelName === "Other" ? "Other (Type custom model)" : modelName;
-                modelSelect.appendChild(option);
-            });
-        }
+    models.forEach(modelName => {
+        let option = document.createElement('option');
+        option.value = modelName;
+        option.textContent = modelName === "Other" ? "Other (Type custom model)" : modelName;
+        modelSelect.appendChild(option);
+    });
+}
 
         // Toggle custom model box when "Other" is selected
         function checkOtherModel(select) {
