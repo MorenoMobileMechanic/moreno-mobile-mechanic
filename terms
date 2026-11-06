@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Moreno Mobile Mechanic</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; background: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        h1, h2 { color: #222; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        .effective-date { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; }
+        ul { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+        .back-link { display: block; margin-top: 30px; text-align: center; text-decoration: none; color: #d9534f; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Terms of Service and Service Agreement</h1>
+        <div class="effective-date">Moreno Mobile Mechanic | California BAR ARD Registration No: ARD 318147</div>
+        
+        <p>Welcome to Moreno Mobile Mechanic. By booking, scheduling, or authorizing diagnostic, maintenance, or repair services with us, you (the "Customer") agree to the following terms and conditions. Please read them carefully.</p>
+
+        <h2>1. California BAR Compliance & Authorizations</h2>
+        <ul>
+            <li><strong>Written Estimates:</strong> In accordance with California law, we will provide a written estimate detailing the estimated price for parts and labor before any repair or diagnostic work begins.</li>
+            <li><strong>Customer Authorization:</strong> No work will be performed, and no charges will accrue, until the customer provides authorization (written, electronic, or oral). If we discover additional needed repairs during service, we will contact you for authorization before proceeding.</li>
+            <li><strong>Final Invoices:</strong> Upon completion of the services, you will receive an itemized invoice separating labor, parts (specifying whether they are new, used, or rebuilt), sales tax, and any applicable environmental/disposal fees.</li>
+        </ul>
+
+        <h2>2. Service Location & Site Safety</h2>
+        <ul>
+            <li><strong>Customer Responsibility:</strong> The customer certifies that they own the vehicle or have explicit authorization from the owner to authorize service.</li>
+            <li><strong>Safe Working Environment:</strong> The vehicle must be parked in a safe, legal, and level location (e.g., a private driveway, garage, or designated parking space) that permits mobile auto repair.</li>
+            <li><strong>HOA / Property Rules:</strong> The customer is solely responsible for obtaining any necessary permissions, permits, or HOA clearances required to perform work on the property.</li>
+            <li><strong>Right to Refuse Service:</strong> Our technicians reserve the right to refuse or halt service if the location is deemed unsafe, hazardous, illegal, or lacking adequate space (e.g., heavily sloped driveways, busy public streets, or apartment complexes prohibiting mechanical work). A service call fee may still apply.</li>
+        </ul>
+
+        <h2>3. Diagnostics and "No-Start" Conditions</h2>
+        <p>Diagnostic fees covers mobile dispatch and the technician’s time and expertise to troubleshoot a specific concern. A diagnosis is an educated finding based on testing; however, intermittent issues may require additional diagnostic time if they cannot be replicated on-site. The diagnostic fee must be paid regardless of how long it takes to diagnose the customer's concern. Additional diagnostic time may be required depending on the issue, at which point we will ask for further authorization.</p>
+        <p>If a vehicle requires a "tear down" or extensive disassembly to provide an accurate estimate, the customer will be informed of potential teardown charges beforehand.</p>
+
+        <h2>4. Parts and Customer-Supplied Parts</h2>
+        <ul>
+            <li><strong>New vs. Aftermarket:</strong> Unless specified otherwise, parts supplied will be new, OEM, or high-quality aftermarket equivalents.</li>
+            <li><strong>Customer-Provided Parts:</strong> If a customer-supplied part fails or does not fit, the customer remains responsible for all diagnostic and labor hours incurred.</li>
+        </ul>
+
+        <h2>5. Pricing, Fees, and Payment Terms</h2>
+        <ul>
+            <li><strong>Payment Due:</strong> Payment for services, parts, and applicable California state sales tax is due in full immediately upon completion of the work.</li>
+            <li><strong>Accepted Payment Methods:</strong> Cash, Debit Card, Credit Card, or financing options such as SunBit.</li>
+            <li><strong>Diagnostic / Service Call Fees:</strong> A mobile dispatch or service fee applies to all visits, regardless of whether a repair is ultimately authorized or performed.</li>
+            <li><strong>Mechanics' Lien:</strong> In the event that payment is dishonored, stopped, or unpaid, Moreno Mobile Mechanic reserves the right to enforce a Mechanics' Lien against the vehicle under California law until full payment is rendered.</li>
+        </ul>
+
+        <h2>6. Warranties on Workmanship and Parts</h2>
+        <ul>
+            <li><strong>Labor Warranty:</strong> We stand by our work and offer a 60 day / 10,000 Mile limited warranty on our labor.</li>
+            <li><strong>Parts Warranty:</strong> Parts are subject to the manufacturer’s warranty.</li>
+            <li><strong>Exclusions:</strong> Warranties do not cover abuse, neglect, off-road use, unauthorized modifications, or failure to follow subsequent maintenance advice. Warranties are void if another party attempts repairs on the same components.</li>
+        </ul>
+
+        <h2>7. Limitation of Liability</h2>
+        <ul>
+            <li><strong>Pre-Existing Conditions:</strong> Moreno Mobile Mechanic is not liable for pre-existing mechanical failures, rust-damaged bolts that snap during normal removal, or components failing due to age and wear.</li>
+            <li><strong>Acts of God / Environment:</strong> We are not responsible for environmental contamination, fluid stains on driveways if underlying conditions cause leaks, or delays caused by weather, traffic, or parts delivery disruptions.</li>
+            <li><strong>Test Drives:</strong> The customer authorizes our technicians to test-drive the vehicle on public streets and highways as necessary for diagnosis, repair verification, and quality control.</li>
+        </ul>
+
+        <a href="index.html" class="back-link">&larr; Return to Booking Form</a>
+    </div>
+</body>
+</html>
